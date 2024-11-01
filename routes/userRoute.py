@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
-from model.User import User
+from model.User import User, get_users
 from pydantic import BaseModel
+import json
 
 router = APIRouter()
 
@@ -21,5 +22,13 @@ async def create_user(user: UserModel):
         user_dict = user.dict()
         new_user = User(user_dict)
         result = await new_user.insert_one()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro: {e}")
+
+@router.get('/users')
+async def get_all_users():
+    try:
+        users = await get_users()
+        return users
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro: {e}")
