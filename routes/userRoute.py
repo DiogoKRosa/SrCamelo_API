@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Response
 from model.User import User, get_users
+from model.ApiResponse import APIResponse
 from pydantic import BaseModel
-import json
+from auth.authentication import get_password_hash
 
 router = APIRouter()
 
@@ -16,12 +17,18 @@ class UserModel(BaseModel):
     uf: str | None = None
     city: str | None = None
 
-@router.post('/users', status_code=status.HTTP_201_CREATED)
+@router.post('/users')
 async def create_user(user: UserModel):
     try:
-        user_dict = user.dict()
-        new_user = User(user_dict)
-        result = await new_user.insert_one()
+        print(user)
+        user.password = get_password_hash(user.password)
+        new_user = User(user.dict())
+        response = await new_user.insert_one()
+        return APIResponse(
+            status=status.HTTP_201_CREATED,
+            message="Usuário criado com sucesso!",
+            data = response
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro: {e}")
 
