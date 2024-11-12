@@ -26,7 +26,7 @@ async def create_user(user: UserModel):
         response = await new_user.insert_one()
         return APIResponse(
             status=status.HTTP_201_CREATED,
-            message="Usuário criado com sucesso!",
+            message="Usuario criado com sucesso!",
             data = response
         )
     except Exception as e:

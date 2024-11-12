@@ -20,7 +20,7 @@ async def login(form_data: LoginModel):
     if not user or not verify_password(form_data.password, user['password']):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Usuário ou Senha Incorreta",
+            detail="Usuario ou Senha Incorreta",
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
@@ -29,5 +29,5 @@ async def login(form_data: LoginModel):
     return APIResponse(
         status=status.HTTP_200_OK,
         message="Login realizado com sucesso!",
-        data={"access_token": access_token, "token_type": "bearer"},
+        data={"access_token": access_token, "token_type": "bearer", "userType": user["userType"], "user_id": user["_id"]["$oid"]},
     )
