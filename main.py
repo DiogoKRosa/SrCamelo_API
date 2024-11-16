@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from model.database import db
 import uvicorn
-from routes import userRoute, loginRoute
+from routes import userRoute, loginRoute, productRoute
 
 # Instancia a API
 app = FastAPI()
 
 app.include_router(userRoute.router)
 app.include_router(loginRoute.router)
+app.include_router(productRoute.router)
 
 @app.get("/")
 async def root():
