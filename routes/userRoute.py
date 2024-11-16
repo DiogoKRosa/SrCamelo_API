@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Response
-from model.User import User, get_users
+from model.User import User, get_users, add_establishment
 from model.ApiResponse import APIResponse
 from pydantic import BaseModel
 from auth.authentication import get_password_hash
@@ -16,6 +16,8 @@ class UserModel(BaseModel):
     country: str | None = None
     uf: str | None = None
     city: str | None = None
+    image: str | None = None
+    establishment: str | None = None
 
 @router.post('/users')
 async def create_user(user: UserModel):
@@ -37,5 +39,13 @@ async def get_all_users():
     try:
         users = await get_users()
         return users
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro: {e}")
+    
+@router.put('/users/{id}')
+async def add_new_information(id: str, user: User):
+    try:
+        res = await add_establishment(id, user.dict())
+        return res
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro: {e}")

@@ -21,3 +21,8 @@ async def get_users():
 async def get_user_by_email(email):
     res = collection.find_one({"email": email})
     return json.loads(json_util.dumps(res))
+
+async def add_establishment(id, data):
+    res = collection.update_one({"_id": ObjectId(id)}, {"$set": {"image": data.get("image"), "establishment": data.get("establishment")}})
+    object = collection.find_one({"_id": ObjectId(id)})
+    return json.loads(json_util.dumps(object))
