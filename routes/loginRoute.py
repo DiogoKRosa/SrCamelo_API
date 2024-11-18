@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Response, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from auth.authentication import verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
-from model.User import get_user_by_email
+from model.User import get_user_by_email, update_first_access
 from model.ApiResponse import APIResponse
 from datetime import timedelta
 
@@ -26,6 +26,7 @@ async def login(form_data: LoginModel):
     access_token = create_access_token(
         data={"sub": user["name"]}, expires_delta=access_token_expires
     )
+    update_first_access_response = await update_first_access(user["_id"]["$oid"])
     return APIResponse(
         status=status.HTTP_200_OK,
         message="Login realizado com sucesso!",
