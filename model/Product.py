@@ -19,7 +19,13 @@ async def get_products(vendor_id):
     return json.loads(json_util.dumps(res))
 
 async def update_product(id, data):
-    res = collection.update_one({"_id": ObjectId(id)}, {"$set": data})
+    res = collection.update_one({"_id": ObjectId(id)}, {"$set": {
+        "name": data['name'],
+        "description": data['description'],
+        "price": data['price'],
+        "image": data['image'],
+        "category": data['category']
+    }})
     object = collection.find_one({"_id": ObjectId(id)})
     return json.loads(json_util.dumps(object))
 

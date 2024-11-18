@@ -43,9 +43,13 @@ async def get_all_users():
         raise HTTPException(status_code=500, detail=f"Erro: {e}")
     
 @router.put('/users/{id}')
-async def add_new_information(id: str, user: User):
+async def add_new_information(id: str, user: UserModel):
     try:
         res = await add_establishment(id, user.dict())
-        return res
+        return APIResponse(
+            status=status.HTTP_202_ACCEPTED,
+            message="Usuario atualizado com sucesso!",
+            data = res
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro: {e}")
