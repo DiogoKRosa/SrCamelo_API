@@ -1,8 +1,11 @@
-from fastapi import APIRouter, HTTPException, status, Response
-from model.User import User, get_users, add_establishment
+from fastapi import APIRouter, HTTPException, status, Response, UploadFile, File, Form
+from model.User import User, get_users, update_new_vendor_banner
 from model.ApiResponse import APIResponse
 from pydantic import BaseModel
 from auth.authentication import get_password_hash
+import json
+import os
+import uuid
 
 router = APIRouter()
 
@@ -41,15 +44,29 @@ async def get_all_users():
         return users
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro: {e}")
-    
-@router.put('/users/{id}')
-async def add_new_information(id: str, user: UserModel):
+
+@router.put('/newVendor/{vendor_id}')
+async def addEstablishment(bannerFormVendor:str = Form(...), image: UploadFile | None = File(None)):
     try:
-        res = await add_establishment(id, user.dict())
+        form_data = json.loads(bannerFormVendor)
+        
+        if image:
+            file_extension = os.path.splitext(image.filename)[1] 
+            unique_filename = f"{uuid.uuid4()}{file_extension}"
+            file_location = os.path.join("uploads" , unique_filename)
+            with open(file_location, "wb") as buffer:
+                buffer.write(image.file.read())
+            form_data['imageBanner'] = file_location
+        
+        print(form_data)
+
+        response = await update_new_vendor_banner(form_data['_id']['$oid'] , form_data)
+
         return APIResponse(
             status=status.HTTP_202_ACCEPTED,
-            message="Usuario atualizado com sucesso!",
-            data = res
+            message="Banner atualizado com sucesso!",
+            data = response
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro: {e}")
+
