@@ -29,5 +29,5 @@ async def login(form_data: LoginModel):
     return APIResponse(
         status=status.HTTP_200_OK,
         message="Login realizado com sucesso!",
-        data={"access_token": access_token, "token_type": "bearer", "userType": user["userType"], "user_id": user["_id"]["$oid"]},
+        data={"access_token": access_token, "token_type": "bearer", "userType": user["userType"], "user_id": user["_id"]["$oid"], "firstAccess": user["firstAccess"] },
     )

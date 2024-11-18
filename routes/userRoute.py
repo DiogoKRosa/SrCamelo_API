@@ -28,6 +28,7 @@ async def create_user(user: UserModel):
         print(user)
         user.password = get_password_hash(user.password)
         new_user = User(user.dict())
+        new_user["firstAccess"] = True
         response = await new_user.insert_one()
         return APIResponse(
             status=status.HTTP_201_CREATED,
