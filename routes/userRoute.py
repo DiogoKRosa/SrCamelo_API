@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Response, UploadFile, File, Form
-from model.User import User, get_users, update_new_vendor_banner
+from model.User import User, get_users, update_new_vendor_banner, get_user_by_id
 from model.ApiResponse import APIResponse
 from pydantic import BaseModel
 from auth.authentication import get_password_hash
@@ -42,6 +42,14 @@ async def get_all_users():
     try:
         users = await get_users()
         return users
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro: {e}")
+
+@router.get('/users/{id}')
+async def get_user_by_id_handler(id: str):
+    try:
+        user = await get_user_by_id(id)
+        return user
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro: {e}")
 

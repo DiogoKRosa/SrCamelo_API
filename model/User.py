@@ -22,6 +22,10 @@ async def get_user_by_email(email):
     res = collection.find_one({"email": email})
     return json.loads(json_util.dumps(res))
 
+async def get_user_by_id(id):
+    res = collection.find_one({"_id": ObjectId(id)})
+    return json.loads(json_util.dumps(res))
+
 async def update_new_vendor_banner(id, data):
     print(id, data)
     res = collection.update_one({"_id": ObjectId(id)}, 
