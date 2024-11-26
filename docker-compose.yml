@@ -1,0 +1,22 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"  # Expondo a porta do MongoDB
+    volumes:
+      - mongo_data:/data/db  # Persistir os dados do MongoDB
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api-python
+    ports:
+      - "8000:8000"  # Expondo a porta da API
+    depends_on:
+      - mongodb  # Garante que o MongoDB inicie antes da API
+
+volumes:
+  mongo_data:
+    driver: local
