@@ -61,9 +61,10 @@ async def update_produt(product: str = Form(...), image: UploadFile | None = Fil
             file_extension = os.path.splitext(image.filename)[1] 
             unique_filename = f"{uuid.uuid4()}{file_extension}"
             file_location = os.path.join("uploads" , unique_filename)
+            path_upload = os.path.join("static", unique_filename)
             with open(file_location, "wb") as buffer:
                 buffer.write(image.file.read())
-            product_data['image'] = file_location
+            product_data['image'] = path_upload
         print(product_data)
         response = await update_product(product_data['_id']['$oid'], product_data)
         print(response)
