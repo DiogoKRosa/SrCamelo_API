@@ -20,17 +20,20 @@ class ProductModel(BaseModel):
 async def createProduct(product: str = Form(...), image: UploadFile | None = File(None)):
     try:
         product_data = json.loads(product)
-
+        print(image)
         if image:
             file_extension = os.path.splitext(image.filename)[1] 
             unique_filename = f"{uuid.uuid4()}{file_extension}"
             file_location = os.path.join("uploads" , unique_filename)
+            path_upload = os.path.join("static", unique_filename)
             with open(file_location, "wb") as buffer:
                 buffer.write(image.file.read())
-            product_data['image'] = file_location
+            product_data['image'] = path_upload
+        print(product_data)
 
         new_product = Product(product_data)
         response = await new_product.insert_one()
+        print(response)
         return APIResponse(
             status=status.HTTP_201_CREATED,
             message="Produto criado com sucesso!",

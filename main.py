@@ -8,7 +8,7 @@ import os
 # Instancia a API
 app = FastAPI()
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+app.mount("/static", StaticFiles(directory="uploads"), name="static")
 
 app.include_router(userRoute.router)
 app.include_router(loginRoute.router)
