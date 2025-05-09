@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status, Response, UploadFile, File, Form
-from model.User import User, get_users, update_new_vendor_banner, get_user_by_id
+from model.User import User, get_users, update_new_vendor_banner, get_user_by_id, get_vendors
 from model.ApiResponse import APIResponse
 from pydantic import BaseModel
 from auth.authentication import get_password_hash
@@ -26,7 +26,6 @@ class UserModel(BaseModel):
 @router.post('/users')
 async def create_user(user: UserModel):
     try:
-        print(user)
         user.password = get_password_hash(user.password)
         new_user = User(user.dict())
         response = await new_user.insert_one()
@@ -76,6 +75,19 @@ async def addEstablishment(bannerFormVendor:str = Form(...), image: UploadFile |
             status=status.HTTP_202_ACCEPTED,
             message="Banner atualizado com sucesso!",
             data = response
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro: {e}")
+    
+
+@router.get("/vendors")
+async def getVendors():
+    try:
+        res = await get_vendors()
+        return APIResponse(
+            status=status.HTTP_200_OK,
+            message="Requisicao confimada",
+            data = res
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro: {e}")

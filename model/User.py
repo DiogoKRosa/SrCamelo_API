@@ -42,3 +42,7 @@ async def update_first_access(id):
     res = collection.update_one({"_id": ObjectId(id)}, {"$set": {"firstAccess": False}})
     object = collection.find_one({"_id": ObjectId(id)})
     return json.loads(json_util.dumps(object))
+
+async def get_vendors():
+    res = collection.find({"userType": "vendedor"})
+    return json.loads(json_util.dumps(res))
