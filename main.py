@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from model.database import db
 import uvicorn
-from routes import userRoute, loginRoute, productRoute
+from routes import userRoute, loginRoute, productRoute, coordinateRoute, chatRoute
 import os
 
 # Instancia a API
@@ -13,6 +13,8 @@ app.mount("/static", StaticFiles(directory="uploads"), name="static")
 app.include_router(userRoute.router)
 app.include_router(loginRoute.router)
 app.include_router(productRoute.router)
+app.include_router(coordinateRoute.router)
+app.include_router(chatRoute.router)
 
 @app.get("/")
 async def root():
@@ -20,7 +22,7 @@ async def root():
 
 if __name__ == '__main__':
 
-    srcamelo_collections = ['users', 'products', 'invoices']
+    srcamelo_collections = ['users', 'products', 'invoices', 'coordinates', 'chat']
     collections = db.list_collection_names()
 
     for collection in srcamelo_collections:
