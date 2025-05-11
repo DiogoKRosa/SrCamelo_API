@@ -26,7 +26,24 @@ async def get_one(user_id):
     res = collection.find({"user_id": user_id})
     return json.loads(json_util.dumps(res))
 
-async def update_one(user_id, axis_x, axis_y):
-        res = collection.update_one({"user_id": user_id},
-                                {"x_axis": axis_x, "y_axis": axis_y})
+def update_one(user_id, latitude, longitude):
+    obj = collection.find_one({"userId": user_id})
+    if obj != None:
+        res = collection.update_one(
+            {"userId": user_id},
+            {"$set": {
+                
+                "latitude": latitude,
+                "longitude": longitude
+            }},
+            upsert=True
+        )
+    else:
+        res = collection.insert_one({
+            "userId": user_id,
+            "latitude": latitude,
+            "longitude": longitude
+        })
+    
+    
     
