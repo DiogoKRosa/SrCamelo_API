@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from model.database import db
 import uvicorn
-from routes import userRoute, loginRoute, productRoute, coordinateRoute, chatRoute
+from routes import userRoute, loginRoute, productRoute, coordinateRoute, chatRoute, invoiceRoute
 import os
 
 # Instancia a API
@@ -15,6 +15,7 @@ app.include_router(loginRoute.router)
 app.include_router(productRoute.router)
 app.include_router(coordinateRoute.router)
 app.include_router(chatRoute.router)
+app.include_router(invoiceRoute.router)
 
 @app.get("/")
 async def root():
