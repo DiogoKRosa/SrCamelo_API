@@ -2,6 +2,7 @@ from fastapi import APIRouter, status, HTTPException
 from pydantic import BaseModel, Field, validator
 from model.ApiResponse import APIResponse
 from model.Chat import Chat, get_all_last_messages, get_all_private_messages
+from model.User import get_user_by_id
 from typing import List
 from filterWords import filterWords
 from datetime import datetime
@@ -42,6 +43,16 @@ async def get_messages(login_id: str):
             message['datetime'] = message['datetime']['$date']
             del message['participant_key']
 
+            participant_detail = []
+            for participant_id in message['participants']:
+                user = await get_user_by_id(participant_id)
+                participant_detail.append({
+                    "userId": user['_id']['$oid'],
+                    "userName": user['name'],
+                    "image": user['image']
+                })
+            message['participantDetails'] = participant_detail
+        print(res)
         return APIResponse(
             status=status.HTTP_200_OK,
             message="get_messages = Requisição confirmada",
