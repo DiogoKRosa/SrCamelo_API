@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, status, Response, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
-from model.Coordinate import Coordinate, get_all_vendors, get_one, update_one
+from model.Coordinate import Coordinate, get_all_vendors, get_one, update_one, get_all
+from model.User import get_user_by_id
 from model.ApiResponse import APIResponse
 from datetime import timedelta
 
@@ -15,7 +16,12 @@ router = APIRouter()
 @router.get("/location")
 async def get_all_coordinate():
     try:
-        coord = await get_all_vendors()
+        coord = await get_all()
+        for register in coord:
+            del register['_id']
+            user = await get_user_by_id(register['userId'])
+            register['userName'] = user['name']
+
         return APIResponse(
             status=status.HTTP_202_ACCEPTED, message="OK", data=coord
         )
