@@ -20,6 +20,7 @@ class InvoiceModel(BaseModel):
     clientNumber: str
     vendorId: str
     vendorName: str
+    vendorNumber: str
     invoiceTotal: float
     productsList: List[ProductInvoiceModel]
     paymentType: str
@@ -43,7 +44,12 @@ async def send_invoice(invoice: InvoiceModel):
 @router.get("/invoice")
 async def get_invoice(uid: str):
     try:
-        res = get_all_invoices_from_user(uid)
+        print(uid)
+        res = await get_all_invoices_from_user(uid)
+
+        for invoice in res:
+            invoice['datetime'] = invoice['datetime']['$date']
+
         return APIResponse(
             status=status.HTTP_200_OK,
             message="Requisicao confirmada",
